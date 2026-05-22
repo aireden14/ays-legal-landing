@@ -1,0 +1,1125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ABDI Service — WhatsApp-заявка</title>
+  <meta name="description" content="Короткая WhatsApp-заявка на ремонт техники для салонов красоты, заточку ножей и диагностику.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ABDI Service — WhatsApp-заявка">
+  <meta property="og:description" content="Заполните короткий квиз, и WhatsApp откроется с готовым сообщением мастеру.">
+  <meta property="og:image" content="images/logo-abdi.png">
+  <link rel="icon" href="images/logo-abdi.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050506;
+      --panel: #16161b;
+      --panel-2: #1f1f26;
+      --line: rgba(255, 255, 255, 0.12);
+      --line-strong: rgba(255, 255, 255, 0.2);
+      --text: #ffffff;
+      --muted: rgba(255, 255, 255, 0.68);
+      --soft: rgba(255, 255, 255, 0.44);
+      --red: #ef3434;
+      --red-dark: rgba(239, 52, 52, 0.18);
+      --green: #58e36f;
+      --cyan: #64e7ff;
+      --shadow: 0 20px 70px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-width: 0;
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-width: 0;
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(239, 52, 52, 0.24), transparent 36rem),
+        radial-gradient(circle at 100% 10%, rgba(100, 231, 255, 0.13), transparent 30rem),
+        linear-gradient(180deg, #09090d 0%, #050506 68%);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: linear-gradient(180deg, #000, transparent 78%);
+      -webkit-mask-image: linear-gradient(180deg, #000, transparent 78%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    img { display: block; max-width: 100%; }
+
+    .page {
+      position: relative;
+      width: min(100% - 24px, 920px);
+      margin: 0 auto;
+      padding: 12px 0 32px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 10px 0 12px;
+      background: linear-gradient(180deg, rgba(5, 5, 6, 0.96), rgba(5, 5, 6, 0));
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(12, 12, 16, 0.8);
+      box-shadow: 0 16px 42px rgba(0, 0, 0, 0.32);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      padding-left: 4px;
+    }
+
+    .brand-logo {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      flex: 0 0 auto;
+      padding: 7px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 0 0 1px rgba(239, 52, 52, 0.28);
+      overflow: hidden;
+    }
+
+    .brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform-origin: 50% 50%;
+      animation: logoSpin 7s linear infinite;
+    }
+
+    @keyframes logoSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    .brand span {
+      min-width: 0;
+      overflow: hidden;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .wa-link,
+    .primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border: 0;
+      border-radius: 999px;
+      color: #041006;
+      background: var(--green);
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .wa-link {
+      flex: 0 0 auto;
+      padding: 0 18px;
+      font-size: 14px;
+    }
+
+    .hero {
+      width: min(100%, 560px);
+      margin: 18px auto 0;
+    }
+
+    .offer {
+      margin: 0 0 12px;
+      padding: 0 2px;
+    }
+
+    .offer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 100%;
+      padding: 8px 12px;
+      border: 1px solid rgba(88, 227, 111, 0.35);
+      border-radius: 999px;
+      color: #d9ffe0;
+      background: rgba(88, 227, 111, 0.09);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .offer-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 14px var(--green);
+    }
+
+    .offer h1 {
+      margin: 8px 0 0;
+      font-size: clamp(34px, 10vw, 54px);
+      line-height: 0.95;
+      letter-spacing: -0.065em;
+      font-weight: 900;
+    }
+
+    .quiz {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02)),
+        rgba(19, 19, 24, 0.92);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .quiz-head {
+      display: grid;
+      gap: 14px;
+      padding: 18px 18px 8px;
+    }
+
+    .step-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .step-meta span:last-child {
+      flex: 0 0 auto;
+      color: var(--soft);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .progress {
+      width: 100%;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--red), #ff7a7a);
+      transition: width 0.25s ease;
+    }
+
+    .quiz-body {
+      min-width: 0;
+      padding: 18px;
+    }
+
+    .question {
+      margin: 0;
+      overflow-wrap: anywhere;
+      font-size: clamp(28px, 8vw, 40px);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+      font-weight: 900;
+    }
+
+    .hint {
+      margin: 10px 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .choices {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .choice {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      width: 100%;
+      min-width: 0;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.045);
+      cursor: pointer;
+    }
+
+    .choice input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .mark {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      margin-top: 1px;
+      border: 2px solid rgba(255, 255, 255, 0.28);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.12);
+    }
+
+    .choice input[type="checkbox"] + .mark { border-radius: 9px; }
+
+    .choice input:checked + .mark {
+      border-color: var(--red);
+      background: var(--red);
+    }
+
+    .choice input:checked + .mark::after {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 3px;
+      width: 6px;
+      height: 11px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .choice:has(input:checked) {
+      border-color: rgba(239, 52, 52, 0.75);
+      background: linear-gradient(135deg, var(--red-dark), rgba(255, 255, 255, 0.045));
+    }
+
+    .choice-text {
+      min-width: 0;
+    }
+
+    .choice strong {
+      display: block;
+      min-width: 0;
+      font-size: 15px;
+      line-height: 1.18;
+      overflow-wrap: anywhere;
+    }
+
+    .choice small {
+      display: block;
+      min-width: 0;
+      margin-top: 4px;
+      color: var(--soft);
+      font-size: 12px;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .label {
+      color: var(--soft);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      min-width: 0;
+      min-height: 50px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      outline: none;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    textarea {
+      min-height: 112px;
+      resize: vertical;
+      line-height: 1.42;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: rgba(100, 231, 255, 0.62);
+      box-shadow: 0 0 0 4px rgba(100, 231, 255, 0.08);
+    }
+
+    .other-field {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .other-field.is-visible { display: block; }
+
+    .summary {
+      display: grid;
+      gap: 8px;
+    }
+
+    .summary-row {
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .summary-row b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--soft);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .summary-row span {
+      display: block;
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.36;
+      overflow-wrap: anywhere;
+    }
+
+    .preview {
+      margin-top: 10px;
+      min-height: 150px;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 13px;
+    }
+
+    .error {
+      min-height: 20px;
+      margin-top: 12px;
+      color: #ffadad;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: minmax(74px, auto) minmax(0, 1fr);
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
+      padding: 14px 18px 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .submit-note {
+      display: none;
+      grid-column: 1 / -1;
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .actions.is-final .submit-note {
+      display: block;
+    }
+
+    .back-btn {
+      min-width: 0;
+      min-height: 46px;
+      padding: 0 6px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .back-btn:disabled {
+      color: rgba(255, 255, 255, 0.22);
+      cursor: default;
+    }
+
+    .primary-btn {
+      width: 100%;
+      min-width: 0;
+      padding: 0 16px;
+      color: #070708;
+      background: #fff;
+      font-size: 15px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .primary-btn.is-whatsapp {
+      color: #fff;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 32%),
+        linear-gradient(135deg, #ff5f5f 0%, #e51f2d 42%, #8f1119 100%);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -12px 24px rgba(80, 0, 0, 0.28),
+        0 16px 36px rgba(239, 52, 52, 0.36);
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.28);
+    }
+
+    .below {
+      width: min(100%, 760px);
+      margin: 22px auto 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      max-width: 100%;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.045);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .tag::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 14px var(--green);
+    }
+
+    .intro h1 {
+      margin: 2px 0 0;
+      font-size: clamp(34px, 10vw, 68px);
+      line-height: 0.95;
+      letter-spacing: -0.065em;
+      font-weight: 900;
+    }
+
+    .intro p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .info-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .info-card {
+      min-width: 0;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .info-card b {
+      display: block;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .info-card span {
+      display: block;
+      margin-top: 5px;
+      color: var(--soft);
+      font-size: 12px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .map-card {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.045);
+      overflow: hidden;
+    }
+
+    .map-card h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .map-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .map-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .map-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 14px;
+      border-radius: 999px;
+      color: #070708;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .map-frame {
+      width: 100%;
+      height: 220px;
+      border: 0;
+      border-radius: 16px;
+      background: var(--panel-2);
+    }
+
+    .footer {
+      width: min(100%, 760px);
+      margin: 22px auto 0;
+      padding: 18px 0 6px;
+      color: var(--soft);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    @media (min-width: 640px) {
+      .page { width: min(100% - 40px, 920px); padding-top: 16px; }
+      .hero { margin-top: 28px; }
+      .quiz { border-radius: 30px; }
+      .quiz-head { padding: 22px 22px 10px; }
+      .quiz-body { padding: 22px; }
+      .actions { padding: 16px 22px 22px; }
+      .choices { gap: 10px; }
+      .choice { padding: 15px; }
+      .info-grid { grid-template-columns: repeat(3, 1fr); }
+      .map-card { padding: 18px; }
+      .map-actions { grid-template-columns: auto 1fr; align-items: center; }
+      .map-frame { height: 280px; }
+    }
+
+    @media (max-width: 370px) {
+      .page { width: min(100% - 16px, 920px); }
+      .brand span { font-size: 14px; }
+      .wa-link { padding: 0 14px; font-size: 13px; }
+      .quiz-head, .quiz-body { padding-inline: 14px; }
+      .actions { padding-inline: 14px; grid-template-columns: 64px minmax(0, 1fr); }
+      .choice { grid-template-columns: 26px minmax(0, 1fr); gap: 10px; padding: 12px; }
+      .question { font-size: 27px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .brand-logo img {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <nav class="nav" aria-label="Главная навигация">
+        <a class="brand" href="#top" aria-label="ABDI Service">
+          <span class="brand-logo">
+            <img src="images/logo-abdi-transparent.png" alt="ABDI Service">
+          </span>
+          <span>ABDI Service</span>
+        </a>
+        <a class="wa-link" href="https://wa.me/77013699242" target="_blank" rel="noopener">WhatsApp</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-label="WhatsApp-квиз">
+        <div class="offer">
+          <div class="offer-pill">Быстрый расчет</div>
+          <h1>Пройди квиз и узнай цену</h1>
+        </div>
+        <form class="quiz" id="quizForm">
+          <div class="quiz-head">
+            <div class="step-meta">
+              <strong id="stepName">Услуга</strong>
+              <span id="stepCount">1/7</span>
+            </div>
+            <div class="progress" aria-hidden="true">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <div class="quiz-body" id="quizBody"></div>
+
+          <div class="actions">
+            <button class="back-btn" type="button" id="backBtn">Назад</button>
+            <button class="primary-btn" type="button" id="mainBtn">Дальше</button>
+            <p class="submit-note">Вы будете перенаправлены в WhatsApp, где необходимо будет отправить сообщение с этой информацией. Далее мастер ответит вам по цене.</p>
+          </div>
+        </form>
+      </section>
+
+      <section class="below" aria-label="Информация">
+        <div class="intro">
+          <div class="tag">Ремонт, диагностика, заточка</div>
+          <h1>Заявка на ремонт техники для салона</h1>
+          <p>Ответьте на несколько вопросов. WhatsApp откроется с готовым сообщением: услуга, техника, проблема, срочность и способ передачи.</p>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-card">
+            <b>Что ремонтируем</b>
+            <span>Машинки, триммеры, шейверы, аппараты для маникюра, лампы, вытяжки и другую beauty-технику.</span>
+          </div>
+          <div class="info-card">
+            <b>Алмазная заточка</b>
+            <span>Ножи и ножевые блоки для стрижки. Если ножей несколько, лучше подписать их перед передачей.</span>
+          </div>
+          <div class="info-card">
+            <b>Как передать</b>
+            <span>Привезти на Биржан Сал 2, отправить через inDrive, Яндекс Такси или передать через другого человека.</span>
+          </div>
+        </div>
+
+        <div class="map-card" aria-label="Адрес на 2ГИС">
+          <h2>Адрес: Биржан сал 2</h2>
+          <p>Можно привезти технику самому или отправить курьером. Откройте адрес в 2ГИС, чтобы построить маршрут.</p>
+          <div class="map-actions">
+            <a class="map-link" href="https://2gis.kz/astana/geo/9570784863335074/tab/services" target="_blank" rel="noopener">Открыть в 2ГИС</a>
+          </div>
+          <iframe class="map-frame" title="Биржан сал 2 на 2ГИС" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://2gis.kz/astana/geo/9570784863335074/tab/services"></iframe>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      ABDI Service. WhatsApp: <a href="https://wa.me/77013699242" target="_blank" rel="noopener">+7 701 369 9242</a>. Адрес для привоза: Биржан Сал 2.
+    </footer>
+  </div>
+
+  <script>
+    const WHATSAPP_NUMBER = "77013699242";
+    const ADDRESS = "Биржан Сал 2";
+    const PRICE_REQUEST = "Хочу узнать примерную цену.";
+
+    const steps = [
+      {
+        id: "service",
+        title: "Услуга",
+        question: "Какая услуга нужна?",
+        hint: "Можно выбрать несколько вариантов, если передаете сразу комплект техники.",
+        type: "checkbox",
+        required: true,
+        options: [
+          ["repairClipper", "Ремонт машинки", "Машинка, триммер, шейвер, окантовка."],
+          ["sharpening", "Заточка ножей", "Алмазная заточка ножей и ножевых блоков."],
+          ["manicure", "Аппарат маникюра", "Блок, ручка, педаль, фрезер."],
+          ["otherTech", "Другая техника", "Лампа, вытяжка, стерилизатор, фен и т.д."],
+          ["diagnostics", "Диагностика", "Нужно понять причину и стоимость ремонта."],
+          ["other", "Свой ответ", "Опишите услугу своими словами."]
+        ],
+        otherLabel: "Другая услуга"
+      },
+      {
+        id: "device",
+        title: "Техника",
+        question: "Что за техника?",
+        hint: "Выберите бренд или тип техники. Ниже можно дописать модель и количество.",
+        type: "combo",
+        required: true,
+        options: [
+          ["wahl", "Wahl", "Magic Clip, Super Taper, Senior и другие."],
+          ["moser", "Moser", "Машинки и ножевые блоки Moser."],
+          ["andis", "Andis", "Машинки, триммеры, шейверы."],
+          ["babyliss", "BaBylissPRO", "FX, Lo-Pro, Skeleton и похожие модели."],
+          ["jrl", "JRL", "Машинки, триммеры, шейверы JRL."],
+          ["gamma", "Gamma+ / StyleCraft", "Gamma+, StyleCraft, Rebel, Ergo и т.д."],
+          ["strong", "Strong / Marathon", "Аппараты для маникюра, блоки и ручки."],
+          ["china", "Без бренда / Китай", "На корпусе нет понятного бренда."],
+          ["fake", "Подделка / Китай", "Похожа на бренд, но не оригинал."],
+          ["unknown", "Не знаю бренд", "Мастер посмотрит по фото или при диагностике."],
+          ["other", "Свой ответ", "Напишите бренд или тип техники."]
+        ],
+        otherLabel: "Бренд или тип техники",
+        detailLabel: "Модель / количество",
+        detailPlaceholder: "Например: Magic Clip, 1 машинка + 2 ножа"
+      },
+      {
+        id: "problem",
+        title: "Проблема",
+        question: "Что случилось?",
+        hint: "Отметьте все, что подходит. Подробности можно добавить своим ответом.",
+        type: "checkbox",
+        required: true,
+        options: [
+          ["noPower", "Не включается", "Нет реакции, не заряжается или выключается."],
+          ["noCharge", "Не заряжается", "Не берет заряд или быстро садится."],
+          ["noise", "Шумит", "Появился лишний звук при работе."],
+          ["hot", "Греется", "Сильно нагревается корпус, нож или ручка."],
+          ["vibration", "Вибрирует", "Сильная вибрация или биение."],
+          ["badCut", "Плохо стрижет", "Дергает волос, оставляет полосы, тупит."],
+          ["dullBlade", "Тупые ножи", "Нужна заточка или проверка ножевого блока."],
+          ["powerDrop", "Падает мощность", "Обороты плавают или не тянет под нагрузкой."],
+          ["fall", "После падения", "Уронили, ударили или корпус разошелся."],
+          ["water", "Попала вода", "Залили, промыли или попала жидкость."],
+          ["burn", "Запах гари", "Был запах, дым или подозрение на замыкание."],
+          ["other", "Свой ответ", "Опишите проблему своими словами."]
+        ],
+        otherLabel: "Другая проблема"
+      },
+      {
+        id: "urgency",
+        title: "Срочность",
+        question: "Насколько срочно?",
+        hint: "Так мастер сразу поймет приоритет и сможет ответить по срокам.",
+        type: "radio",
+        required: true,
+        options: [
+          ["today", "Сегодня", "Техника нужна для работы как можно быстрее."],
+          ["tomorrow", "Завтра", "Нужно успеть к завтрашним клиентам."],
+          ["days", "2-3 дня", "Можно подождать несколько дней."],
+          ["quality", "Не срочно", "Главное качественно и спокойно разобраться."],
+          ["price", "Сначала узнать цену", "Хочу понять примерную стоимость."],
+          ["other", "Свой срок", "Укажите удобный срок."]
+        ],
+        otherLabel: "Удобный срок"
+      },
+      {
+        id: "delivery",
+        title: "Передача",
+        question: "Как передадите технику?",
+        hint: "Адрес для самостоятельного привоза: Биржан Сал 2.",
+        type: "radio",
+        required: true,
+        options: [
+          ["self", "Привезу сам(а) на Биржан сал 2", "Адрес: Биржан сал 2."],
+          ["indrive", "Курьер inDrive", "Отправлю через курьерскую доставку."],
+          ["yandex", "Яндекс Такси", "Передам через такси или доставку."],
+          ["person", "Привезет другой человек", "Укажу имя и телефон в WhatsApp."],
+          ["later", "Хочу уточнить", "Пока не знаю, как удобнее передать."],
+          ["other", "Свой вариант", "Другой способ передачи."]
+        ],
+        otherLabel: "Другой способ передачи"
+      },
+      {
+        id: "comment",
+        title: "Комментарий",
+        question: "Что еще важно знать?",
+        hint: "Необязательно. Можно написать, когда началось, что уже пробовали, есть ли фото или видео.",
+        type: "textarea",
+        required: false,
+        label: "Комментарий",
+        placeholder: "Например: после падения стала шуметь, фото отправлю следующим сообщением"
+      },
+      {
+        id: "review",
+        title: "Проверка",
+        question: "Все готово",
+        hint: "Проверьте текст заявки перед отправкой.",
+        type: "review"
+      }
+    ];
+
+    const state = {};
+    let currentStep = 0;
+
+    const quizBody = document.getElementById("quizBody");
+    const stepName = document.getElementById("stepName");
+    const stepCount = document.getElementById("stepCount");
+    const progressFill = document.getElementById("progressFill");
+    const backBtn = document.getElementById("backBtn");
+    const mainBtn = document.getElementById("mainBtn");
+    const actions = document.querySelector(".actions");
+    const form = document.getElementById("quizForm");
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function selectedValues(step) {
+      const raw = state[step.id];
+      if (!raw) return [];
+      const ids = Array.isArray(raw) ? raw : [raw];
+      const labels = ids
+        .filter((id) => id !== "other")
+        .map((id) => step.options.find((option) => option[0] === id)?.[1])
+        .filter(Boolean);
+      const other = (state[`${step.id}Other`] || "").trim();
+      if (other) labels.push(other);
+      return labels;
+    }
+
+    function collectData() {
+      return {
+        service: selectedValues(steps[0]),
+        device: selectedValues(steps[1]),
+        deviceDetails: (state.deviceDetails || "").trim(),
+        problem: selectedValues(steps[2]),
+        urgency: selectedValues(steps[3])[0] || "",
+        delivery: selectedValues(steps[4])[0] || "",
+        comment: (state.comment || "").trim()
+      };
+    }
+
+    function buildMessage() {
+      const data = collectData();
+      const lines = [
+        "Здравствуйте! Хочу оставить заявку в ABDI Service.",
+        PRICE_REQUEST,
+        "",
+        `Услуга: ${data.service.join(", ") || "не указано"}`,
+        `Техника: ${data.device.join(", ") || "не указано"}`,
+        data.deviceDetails ? `Модель / количество: ${data.deviceDetails}` : "",
+        `Проблема: ${data.problem.join(", ") || "не указано"}`,
+        `Срочность: ${data.urgency || "не указано"}`,
+        `Передача техники: ${data.delivery || "не указано"}`,
+        data.delivery.includes(ADDRESS) ? `Адрес: ${ADDRESS}` : "",
+        data.comment ? `Комментарий: ${data.comment}` : "",
+        "",
+        "Могу отправить фото/видео техники следующим сообщением."
+      ];
+      return lines.filter(Boolean).join("\n");
+    }
+
+    function validateStep() {
+      const step = steps[currentStep];
+      const value = state[step.id];
+      const other = (state[`${step.id}Other`] || "").trim();
+
+      if (!step.required) return "";
+      if (step.type === "text" && !String(value || "").trim()) return "Заполните это поле, чтобы мастер понял, о какой технике речь.";
+      if (step.type === "combo" && (!value || (Array.isArray(value) && value.length === 0))) return "Выберите бренд, тип техники или заполните свой ответ.";
+      if ((step.type === "checkbox" || step.type === "radio") && (!value || (Array.isArray(value) && value.length === 0))) return "Выберите вариант или заполните свой ответ.";
+      if ((Array.isArray(value) ? value.includes("other") : value === "other") && !other) return "Заполните поле “Свой ответ”.";
+      return "";
+    }
+
+    function syncInputs() {
+      const step = steps[currentStep];
+      if (step.type === "checkbox" || step.type === "combo") {
+        const checked = [...quizBody.querySelectorAll(`input[name="${step.id}"]:checked`)].map((input) => input.value);
+        state[step.id] = checked;
+      }
+      if (step.type === "radio") {
+        const checked = quizBody.querySelector(`input[name="${step.id}"]:checked`);
+        state[step.id] = checked ? checked.value : "";
+      }
+      if (step.type === "text" || step.type === "textarea") {
+        state[step.id] = quizBody.querySelector(`[name="${step.id}"]`)?.value || "";
+      }
+      const other = quizBody.querySelector(`[name="${step.id}Other"]`);
+      if (other) state[`${step.id}Other`] = other.value;
+      const details = quizBody.querySelector(`[name="${step.id}Details"]`);
+      if (details) state[`${step.id}Details`] = details.value;
+    }
+
+    function renderChoices(step) {
+      const selected = Array.isArray(state[step.id]) ? state[step.id] : [state[step.id]].filter(Boolean);
+      const inputs = step.options.map(([id, title, hint]) => {
+        const checked = selected.includes(id) ? "checked" : "";
+        return `
+          <label class="choice">
+            <input type="${step.type}" name="${step.id}" value="${escapeHtml(id)}" ${checked}>
+            <span class="mark"></span>
+            <span class="choice-text">
+              <strong>${escapeHtml(title)}</strong>
+              <small>${escapeHtml(hint)}</small>
+            </span>
+          </label>
+        `;
+      }).join("");
+      const otherVisible = selected.includes("other") ? "is-visible" : "";
+      const otherValue = state[`${step.id}Other`] || "";
+      return `
+        <div class="choices">${inputs}</div>
+        <div class="other-field ${otherVisible}" id="otherField">
+          <div class="field">
+            <label class="label" for="${step.id}Other">${escapeHtml(step.otherLabel)}</label>
+            <input id="${step.id}Other" type="text" name="${step.id}Other" value="${escapeHtml(otherValue)}" placeholder="Напишите свой вариант">
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCombo(step) {
+      const choices = renderChoices({ ...step, type: "checkbox" });
+      const detailValue = state[`${step.id}Details`] || "";
+      return `
+        ${choices}
+        <div class="field" style="margin-top: 10px;">
+          <label class="label" for="${step.id}Details">${escapeHtml(step.detailLabel)}</label>
+          <input id="${step.id}Details" type="text" name="${step.id}Details" value="${escapeHtml(detailValue)}" placeholder="${escapeHtml(step.detailPlaceholder)}">
+        </div>
+      `;
+    }
+
+    function renderReview() {
+      const data = collectData();
+      const rows = [
+        ["Услуга", data.service.join(", ")],
+        ["Техника", data.device.join(", ")],
+        ["Модель / количество", data.deviceDetails],
+        ["Проблема", data.problem.join(", ")],
+        ["Срочность", data.urgency],
+        ["Передача", data.delivery],
+        ["Комментарий", data.comment]
+      ].filter(([, value]) => value);
+
+      return `
+        <div class="summary">
+          ${rows.map(([label, value]) => `<div class="summary-row"><b>${escapeHtml(label)}</b><span>${escapeHtml(value)}</span></div>`).join("")}
+        </div>
+        <textarea class="preview" readonly>${escapeHtml(buildMessage())}</textarea>
+      `;
+    }
+
+    function renderStep() {
+      const step = steps[currentStep];
+      const progress = ((currentStep + 1) / steps.length) * 100;
+      const isLast = currentStep === steps.length - 1;
+
+      stepName.textContent = step.title;
+      stepCount.textContent = `${currentStep + 1}/${steps.length}`;
+      progressFill.style.width = `${progress}%`;
+      backBtn.disabled = currentStep === 0;
+      mainBtn.textContent = isLast ? "Оставить заявку" : "Дальше";
+      mainBtn.classList.toggle("is-whatsapp", isLast);
+      actions.classList.toggle("is-final", isLast);
+
+      let content = "";
+      if (step.type === "checkbox" || step.type === "radio") content = renderChoices(step);
+      if (step.type === "combo") content = renderCombo(step);
+      if (step.type === "text") content = `<div class="field"><label class="label" for="${step.id}">${escapeHtml(step.label)}</label><input id="${step.id}" name="${step.id}" type="text" value="${escapeHtml(state[step.id] || "")}" placeholder="${escapeHtml(step.placeholder)}"></div>`;
+      if (step.type === "textarea") content = `<div class="field"><label class="label" for="${step.id}">${escapeHtml(step.label)}</label><textarea id="${step.id}" name="${step.id}" placeholder="${escapeHtml(step.placeholder)}">${escapeHtml(state[step.id] || "")}</textarea></div>`;
+      if (step.type === "review") content = renderReview();
+
+      quizBody.innerHTML = `
+        <h2 class="question">${escapeHtml(step.question)}</h2>
+        <p class="hint">${escapeHtml(step.hint)}</p>
+        ${content}
+        <div class="error" id="errorBox" aria-live="polite"></div>
+      `;
+    }
+
+    quizBody.addEventListener("input", () => {
+      syncInputs();
+    });
+
+    quizBody.addEventListener("change", () => {
+      syncInputs();
+      renderStep();
+    });
+
+    backBtn.addEventListener("click", () => {
+      syncInputs();
+      currentStep = Math.max(0, currentStep - 1);
+      renderStep();
+    });
+
+    mainBtn.addEventListener("click", () => {
+      syncInputs();
+      const error = validateStep();
+      if (error) {
+        const errorBox = document.getElementById("errorBox");
+        errorBox.textContent = error;
+        return;
+      }
+
+      if (currentStep < steps.length - 1) {
+        currentStep += 1;
+        renderStep();
+        form.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+
+      const message = encodeURIComponent(buildMessage());
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank", "noopener");
+    });
+
+    renderStep();
+  </script>
+</body>
+</html>
