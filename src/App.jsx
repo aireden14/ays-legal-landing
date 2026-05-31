@@ -345,8 +345,7 @@ const LeadForm = () => {
       trackGoal('lead_submit_success')
     } catch {
       setStatus('fallback')
-      trackGoal('lead_submit_fallback_whatsapp')
-      window.open(whatsappHref(message), '_blank', 'noopener,noreferrer')
+      trackGoal('lead_submit_failed')
     }
   }
 
@@ -395,7 +394,10 @@ const LeadForm = () => {
           )}
           {status === 'fallback' && (
             <p className="form-alert">
-              Telegram на этом домене еще не настроен, поэтому открыли WhatsApp с готовым сообщением.
+              Telegram временно не принял заявку. WhatsApp доступен как дополнительный способ связи:{' '}
+              <a href={whatsappHref(message)} target="_blank" rel="noopener noreferrer">
+                написать администратору
+              </a>.
             </p>
           )}
           <button className="btn btn-primary form-button" type="submit" disabled={status === 'sending'}>
