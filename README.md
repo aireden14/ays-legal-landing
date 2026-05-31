@@ -14,8 +14,8 @@ npm run dev
 Форма отправляет заявки в `/api/lead`. Для деплоя на Vercel задайте переменные:
 
 ```bash
-TELEGRAM_BOT_TOKEN=123456:bot-token
-TELEGRAM_CHAT_ID=123456789
+LEAD_ENDPOINT_URL=https://tg-transcriber-bot-feka.onrender.com/lead
+LEAD_FORM_SECRET=same-secret-as-bot
 ```
 
 Если переменные не настроены, сайт откроет WhatsApp администратора с готовым текстом заявки.

@@ -293,6 +293,7 @@ const LeadForm = () => {
   const [form, setForm] = useState({ problem: '', whatsapp: '' })
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState('')
+  const [lastWhatsappMessage, setLastWhatsappMessage] = useState('')
 
   const message = useMemo(
     () =>
@@ -338,6 +339,7 @@ const LeadForm = () => {
       })
 
       if (!response.ok) throw new Error('telegram_failed')
+      setLastWhatsappMessage(message)
       setStatus('sent')
       setForm({ problem: '', whatsapp: '' })
       trackGoal('lead_submit_success')
@@ -384,7 +386,12 @@ const LeadForm = () => {
           </label>
           {error && <p className="form-alert">{error}</p>}
           {status === 'sent' && (
-            <p className="form-success">Заявка отправлена. Мы свяжемся с вами в WhatsApp.</p>
+            <p className="form-success">
+              Заявка отправлена. Мы свяжемся с вами в WhatsApp. Можно не ждать и{' '}
+              <a href={whatsappHref(lastWhatsappMessage || message)} target="_blank" rel="noopener noreferrer">
+                сразу написать администратору
+              </a>.
+            </p>
           )}
           {status === 'fallback' && (
             <p className="form-alert">

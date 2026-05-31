@@ -1,9 +1,3 @@
-const escapeHtml = (value = '') =>
-  String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-
 const json = (res, status, payload) => {
   res.statusCode = status
   res.setHeader('Content-Type', 'application/json; charset=utf-8')
@@ -16,11 +10,11 @@ export default async function handler(req, res) {
     return
   }
 
-  const token = process.env.TELEGRAM_BOT_TOKEN
-  const chatId = process.env.TELEGRAM_CHAT_ID
+  const leadEndpoint = process.env.LEAD_ENDPOINT_URL || 'https://tg-transcriber-bot-feka.onrender.com/lead'
+  const leadSecret = process.env.LEAD_FORM_SECRET || ''
 
-  if (!token || !chatId) {
-    json(res, 500, { ok: false, error: 'telegram_env_missing' })
+  if (!leadEndpoint) {
+    json(res, 500, { ok: false, error: 'lead_endpoint_missing' })
     return
   }
 
@@ -41,31 +35,28 @@ export default async function handler(req, res) {
     return
   }
 
-  const text = [
-    '<b>Новая заявка АЮС</b>',
-    '',
-    `<b>Проблема:</b>\n${escapeHtml(problem)}`,
-    '',
-    `<b>WhatsApp:</b> ${escapeHtml(whatsapp)}`,
-    page ? `<b>Страница:</b> ${escapeHtml(page)}` : '',
-    attribution ? `<b>Источник:</b>\n${escapeHtml(attribution)}` : '',
-  ]
-    .filter(Boolean)
-    .join('\n')
-
-  const telegramResponse = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+  const leadResponse = await fetch(leadEndpoint, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(leadSecret ? { 'X-Lead-Secret': leadSecret } : {}),
+    },
     body: JSON.stringify({
-      chat_id: chatId,
-      text,
-      parse_mode: 'HTML',
-      disable_web_page_preview: true,
+      site: 'ays-legal-landing',
+      title: 'Заявка АЮС',
+      phone: whatsapp,
+      message: problem,
+      page,
+      attribution,
+      fields: {
+        'Проблема': problem,
+        'WhatsApp': whatsapp,
+      },
     }),
   })
 
-  if (!telegramResponse.ok) {
-    json(res, 502, { ok: false, error: 'telegram_request_failed' })
+  if (!leadResponse.ok) {
+    json(res, 502, { ok: false, error: 'lead_request_failed' })
     return
   }
 
