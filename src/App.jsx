@@ -338,9 +338,10 @@ const LeadForm = () => {
         }),
       })
 
+      const result = await response.json().catch(() => ({}))
       if (!response.ok) throw new Error('telegram_failed')
       setLastWhatsappMessage(message)
-      setStatus('sent')
+      setStatus(result.queued ? 'queued' : 'sent')
       setForm({ problem: '', whatsapp: '' })
       trackGoal('lead_submit_success')
     } catch {
@@ -390,6 +391,12 @@ const LeadForm = () => {
               <a href={whatsappHref(lastWhatsappMessage || message)} target="_blank" rel="noopener noreferrer">
                 сразу написать администратору
               </a>.
+            </p>
+          )}
+          {status === 'queued' && (
+            <p className="form-alert">
+              Заявка сохранена в очереди бота, но Telegram-чат для заявок ещё не выбран.
+              Напишите боту команду /set_leads_chat, и бот пришлёт накопленные заявки.
             </p>
           )}
           {status === 'fallback' && (

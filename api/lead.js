@@ -102,10 +102,17 @@ export default async function handler(req, res) {
     }),
   })
 
+  let leadPayload = {}
+  try {
+    leadPayload = await leadResponse.json()
+  } catch {
+    leadPayload = {}
+  }
+
   if (!leadResponse.ok && !(await sendDirectTelegramLead({ problem, whatsapp, page, attribution }))) {
     json(res, 502, { ok: false, error: 'lead_request_failed' })
     return
   }
 
-  json(res, 200, { ok: true })
+  json(res, 200, { ok: true, queued: Boolean(leadPayload.queued) })
 }
